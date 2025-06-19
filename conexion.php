@@ -4,8 +4,8 @@ $db   = 'restaurante';      // Reemplaza con el nombre de tu base de datos
 $user = 'root';           // Reemplaza con tu usuario
 $pass = '';        // Reemplaza con tu contraseña
 $charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$dbPort = "3307";
+$dsn = "mysql:host=$host;port=$dbPort;dbname=$db;charset=$charset";
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
