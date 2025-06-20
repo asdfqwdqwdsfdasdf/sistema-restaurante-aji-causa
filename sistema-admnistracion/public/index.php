@@ -46,7 +46,7 @@
           </div>
           <div>
             <p class="text-sm text-gray-500">Total Órdenes</p>
-            <p class="text-xl font-bold">124</p>
+            <p class="text-xl font-bold" id="order-totals">124</p>
           </div>
         </div>
         <div class="bg-white p-4 rounded-xl shadow flex items-center gap-4">
@@ -88,6 +88,7 @@
 <script>
   const ordersList = document.getElementById('orders-list');
   const orderDetails = document.getElementById('order-details');
+  const orderTotal = document.getElementById('order-totals');
 
   function renderOrders(orders) {
     ordersList.innerHTML = ''; // limpiar
@@ -104,7 +105,13 @@
       ordersList.appendChild(card);
       if (index === 0) renderOrderDetails(order); // Mostrar la primera por defecto
     });
+
+ 
   }
+function renderTotalOrders(data2){
+  orderTotal.innerHTML = ''; // limpiar
+  orderTotal.innerHTML = `${data2.totalordenes}`; // mostrar total de órdenes
+}
 
   function renderOrderDetails(order) {
     orderDetails.innerHTML = `
@@ -159,6 +166,10 @@
       const response = await fetch('obtener_ordenes.php');
       const data = await response.json();
       renderOrders(data);
+
+    const response2 = await fetch('obtener_total_ordenes.php');
+    const data2 = await response2.json();  // CORRECCIÓN: aquí debe ser response2.json()
+    renderTotalOrders(data2);
     } catch (err) {
       console.error('Error al cargar órdenes:', err);
     }
