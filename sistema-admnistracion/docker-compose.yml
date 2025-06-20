@@ -1,34 +1,74 @@
-version: '3.8'
+# Definición de la versión del archivo de Compose. 
+# Esto es importante para determinar qué características de Docker Compose se utilizarán.
+version: "3"
 
+# Sección donde se definen los servicios (contenedores) que formarán parte de la aplicación.
 services:
-  web:
-    build: .
+  
+  # Servicio para el contenedor PHP.
+  php:
+    # Indica la ruta del Dockerfile que se usará para construir la imagen de PHP.
+    build: './php/'  # El Dockerfile está en el directorio './php/'
+    
+    # Volúmenes para compartir archivos entre el contenedor y el host.
+    volumes:
+      # Sincroniza el directorio 'public' en el host con '/var/www/html' dentro del contenedor.
+      - ./public:/var/www/html/
+
+  # Servicio para el contenedor Apache.
+  apache:
+    # Indica la ruta del Dockerfile que se usará para construir la imagen de Apache.
+    build: './apache/'  # El Dockerfile está en el directorio './apache/'
+    
+    # Dependencias del servicio Apache: debe iniciarse después de PHP y MySQL.
+    depends_on:
+      - php   # Apache depende de PHP para ejecutarse correctamente.
+      - mysql # Apache depende también de MySQL para la base de datos.
+
+    # Configuración de puertos: el contenedor apache expone el puerto 80,
+    # que será mapeado al puerto 8080 del host.
     ports:
       - "8080:80"
+    
+    # Volúmenes para compartir archivos entre el contenedor y el host.
     volumes:
-      - .:/var/www/html
-    depends_on:
-      db:
-        condition: service_healthy  # Espera a que db esté saludable
-    environment:
-      DB_HOST: db
-      DB_USER: root
-      DB_PASS: root
-      DB_NAME: midb
-      DB_PORT: 3306
+      # Sincroniza el directorio 'public' en el host con '/var/www/html' dentro del contenedor.
+      - ./public:/var/www/html/
 
-  db:
-    image: mysql:8.0
+  # Servicio para el contenedor MySQL.
+  mysql:
+    # Usa la imagen oficial de MySQL versión 5.7.
+    image: mysql:5.7 
+    
+    # Siempre reiniciar el contenedor en caso de que se detenga o falle.
+    restart: always
+    
+    # Configuración de puertos: el contenedor MySQL expone el puerto 3306,
+    # que será mapeado al puerto 3307 del host.
     ports:
-      - "3308:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: midb
+      - "3307:3306"
+    
+    # Volúmenes para almacenar datos persistentes fuera del contenedor.
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
-      interval: 10s
-      retries: 5
-      start_period: 10s
-      timeout: 5s
+      # Volumen 'db_data' se usa para persistir datos de la base de datos.
+      - db_data:/var/lib/mysql
+      
+      # Se sincroniza un directorio local 'dump' con '/docker-entrypoint-initdb.d/' dentro del contenedor,
+      # lo que permite ejecutar scripts SQL al iniciar la base de datos (como crear tablas).
+      - ./public/dump:/docker-entrypoint-initdb.d/
+
+    # Variables de entorno para configurar el contenedor MySQL.
+    environment:
+      # Contraseña del root de MySQL.
+      MYSQL_ROOT_PASSWORD: "passwd"  # Contraseña para el usuario root de la base de datos MySQL.
+      # Nombre de la base de datos a crear al iniciar el contenedor.
+      MYSQL_DATABASE: "restaurante"  # Nombre de la base de datos por defecto.
+      # Usuario adicional para MySQL.
+      MYSQL_USER: "user1"  # Nombre de usuario.
+      # Contraseña del usuario MySQL.
+      MYSQL_PASSWORD: "passwd"  # Contraseña para el usuario MySQL.
+
+# Definición de volúmenes usados en los contenedores.
+volumes:
+  # Volumen para persistir datos de la base de datos MySQL.
+  db_data:
