@@ -6,8 +6,8 @@ FROM php:7.2.7-fpm-alpine3.7
 # 2. Actualiza el índice de los paquetes disponibles e instala las actualizaciones más recientes
 #    en la imagen base. El uso de "apk" (Alpine Package Keeper) es común en Alpine Linux para la gestión
 #    de paquetes.
-RUN apk update; \  # Actualiza el índice de los repositorios de paquetes.
-    apk upgrade;    # Actualiza los paquetes instalados a sus versiones más recientes.
+RUN apk update; \  
+    apk upgrade;     
 
 # 3. Instala la extensión "mysqli" de PHP, que es necesaria para la interacción con bases de datos MySQL.
 #    "docker-php-ext-install" es un script que facilita la instalación de extensiones comunes de PHP en imágenes oficiales de Docker.
