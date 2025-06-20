@@ -20,9 +20,10 @@ $sql = "
     LEFT JOIN platos p ON d.id_plato = p.id_plato
     ORDER BY o.id_orden DESC
 ";
-
+// variable booleana que utiliza $link del config.php y $sql (la consulta sql)
 $result = mysqli_query($link, $sql);
 
+// manejo de valor false para $result
 if (!$result) {
     http_response_code(500);
     echo json_encode(['error' => 'Error al obtener órdenes']);
@@ -30,7 +31,12 @@ if (!$result) {
 }
 
 $ordenes = [];
+// mysqli_fetch_assoc : recupera una fila de resultado como un array asociativo, usamos esto sobre $result (el resultado de la consulta)
+// para luego iterar sobre este mediante while, definimos $fila en el parametro de while
 while ($fila = mysqli_fetch_assoc($result)) {
+    //Orden:
+    // $id es el id de la orden obtenido en el array asociativo anteriormente mencionado
+    // $id es utilizado para
     $id = $fila['id_orden'];
     if (!isset($ordenes[$id])) {
         $ordenes[$id] = [
@@ -45,16 +51,17 @@ while ($fila = mysqli_fetch_assoc($result)) {
             'platos' => []
         ];
     }
-
+    // FACTURA: datos para la card de factura de la orden correspondiente
     $ordenes[$id]['factura'][] = [
         'item' => $fila['nombre_plato'],
         'precio' => floatval($fila['precio_unitario']) * intval($fila['cantidad']),
     ];
+    // PLATOS: utilizado para entregar una string como la siguiente: 1x Lomo Saltado
     $ordenes[$id]['platos'][] = [
         'nombre' => $fila['cantidad'] . 'x ' . $fila['nombre_plato'],
         'estado' => 'Orden aceptada'
     ];
 }
-
+// Le pasamos el array $ordenes a la funcion array_values para obtenerlos, luego mediante json_encode los codificamos a json 
 echo json_encode(array_values($ordenes));
 ?>

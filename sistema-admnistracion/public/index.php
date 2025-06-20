@@ -164,6 +164,19 @@
     }
   }
 
+  // Flujo del script:
+  // fetchOrders llama a Render Orders y RenderOrders a RenderOrderDetails
+  // para ello fetchOrders llama de forma asincronica a obtener_ordenes.php el cual le
+  // entregara un array $ordenes codificado en json; esto le pasaremos a "data"
+  // el cual le aplicara el metodo .json() y finalmente se llama a RenderOrders(data)
+  // RenderOrders va a manipular el DOM: 
+  // 1. Limpia el elemento mapeado por id 'orders-list' llamado ordersList
+  // 2. luego utiliza forEach sobre el parametro que se le paso (data)
+  // 3. Sobre el bucle forEach creara un elemento div "card" con los metodos de DOM document.createElement
+  // 4. le asignara las propiedades de tailwind css con card.className
+  // 5. le agregara contenido manipulando su innerHtml y haciendo un mapping con los atributos
+  // 6. Agrega un event listener de tipo click que levantara el renderOrderDetails que corresponda
+  // 7. agrega sobre orderList el elemento "card" creado
   fetchOrders();
 </script>
 
