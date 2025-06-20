@@ -1,12 +1,13 @@
 <?php
 header('Content-Type: application/json');
 require_once 'config.php';
-
 $sql = "
     SELECT 
-        COUNT(o.id_orden) as totalordenes
+        COUNT(*) as totalordenesentregadas
     FROM ordenes o 
+    WHERE o.estado_entrega = 'entregado'
 ";
+
 
 $result = mysqli_query($link, $sql);
 
@@ -16,9 +17,9 @@ if (!$result) {
     exit;
 }
 
-$totalordenes = mysqli_fetch_assoc($result);  // Obtener el resultado como un arreglo asociativo
+$totalordenesentregadas = mysqli_fetch_assoc($result);  // Obtener el resultado como un arreglo asociativo
 
 // Enviar solo el número total de órdenes 
-// {"totalordenes":3}
-echo json_encode(['totalordenes' => (int)$totalordenes['totalordenes']]);
+// {"totalordenesentregadas":x}
+echo json_encode(['totalordenesentregadas' => (int)$totalordenesentregadas['totalordenesentregadas']]);
 ?>

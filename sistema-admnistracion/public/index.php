@@ -54,8 +54,8 @@
             <i class="ti ti-check text-xl text-gray-700"></i>
           </div>
           <div>
-            <p class="text-sm text-gray-500">Completadas</p>
-            <p class="text-xl font-bold">98</p>
+            <p class="text-sm text-gray-500">Ordenes entregadas</p>
+            <p class="text-xl font-bold"  id="ordenes-entregadas" >98</p>
           </div>
         </div>
         <div class="bg-white p-4 rounded-xl shadow flex items-center gap-4">
@@ -88,7 +88,8 @@
 <script>
   const ordersList = document.getElementById('orders-list');
   const orderDetails = document.getElementById('order-details');
-  const orderTotal = document.getElementById('order-totals');
+  const orderTotal = document.getElementById('order-totals'); 
+  const ordenesEntregadas = document.getElementById('ordenes-entregadas'); 
 
   function renderOrders(orders) {
     ordersList.innerHTML = ''; // limpiar
@@ -108,6 +109,13 @@
 
  
   }
+
+ 
+function renderTotalOrdersEntregadas(data3){
+  ordenesEntregadas.innerHTML = ''; // limpiar
+  ordenesEntregadas.innerHTML = `${data3.totalordenesentregadas}`; // mostrar total de órdenes
+}
+
 function renderTotalOrders(data2){
   orderTotal.innerHTML = ''; // limpiar
   orderTotal.innerHTML = `${data2.totalordenes}`; // mostrar total de órdenes
@@ -170,6 +178,12 @@ function renderTotalOrders(data2){
     const response2 = await fetch('obtener_total_ordenes.php');
     const data2 = await response2.json();  // CORRECCIÓN: aquí debe ser response2.json()
     renderTotalOrders(data2);
+
+    const response3 = await fetch('obtener_total_ordenes_entregadas.php');
+    const data3 = await response3.json();   
+    renderTotalOrdersEntregadas(data3);
+
+
     } catch (err) {
       console.error('Error al cargar órdenes:', err);
     }
