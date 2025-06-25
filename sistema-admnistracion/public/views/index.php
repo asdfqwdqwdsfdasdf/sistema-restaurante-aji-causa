@@ -246,6 +246,7 @@ function renderTotalOrders(data2){
   // 6. Agrega un event listener de tipo click que levantara el renderOrderDetails que corresponda
   // 7. agrega sobre orderList el elemento "card" creado
   fetchOrders();
+  setInterval(fetchOrders, 5000);
 </script>
 
 </body>

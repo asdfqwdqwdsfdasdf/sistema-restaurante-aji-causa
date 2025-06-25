@@ -92,5 +92,53 @@ class OrdenDAO {
     $stmt->bindParam(':id', $id);
     return $stmt->execute();
     }
+public function registrarOrden($comentario, $estadoPago, $metodoPago, $platos) {
+    $con = Conexion::conectar();
+    $con->beginTransaction();
+
+    try {
+        $total = 0;
+        foreach ($platos as $p) {
+            $total += $p['cantidad'] * $this->obtenerPrecioPlato($p['id_plato'], $con);
+        }
+
+        $sqlOrden = "INSERT INTO ordenes (comentarios_cliente, estado_pago, metodo_pago, total)
+                     VALUES (:comentario, :estado_pago, :metodo_pago, :total)";
+        $stmtOrden = $con->prepare($sqlOrden);
+        $stmtOrden->execute([
+            ':comentario' => $comentario,
+            ':estado_pago' => $estadoPago,
+            ':metodo_pago' => $metodoPago,
+            ':total' => $total
+        ]);
+
+        $idOrden = $con->lastInsertId();
+
+        foreach ($platos as $p) {
+            $precio = $this->obtenerPrecioPlato($p['id_plato'], $con);
+            $sqlDetalle = "INSERT INTO detalle_orden (id_orden, id_plato, cantidad, precio_unitario)
+                           VALUES (:id_orden, :id_plato, :cantidad, :precio)";
+            $stmtDetalle = $con->prepare($sqlDetalle);
+            $stmtDetalle->execute([
+                ':id_orden' => $idOrden,
+                ':id_plato' => $p['id_plato'],
+                ':cantidad' => $p['cantidad'],
+                ':precio' => $precio
+            ]);
+        }
+
+        $con->commit();
+        return true;
+    } catch (Exception $e) {
+        $con->rollBack();
+        return false;
+    }
+}
+
+private function obtenerPrecioPlato($idPlato, $con) {
+    $stmt = $con->prepare("SELECT precio FROM platos WHERE id_plato = :id");
+    $stmt->execute([':id' => $idPlato]);
+    return $stmt->fetchColumn();
+}
 
 }
