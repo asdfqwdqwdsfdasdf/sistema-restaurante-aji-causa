@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&display=swap" rel="stylesheet">
-  <style>
+  <style> 
     body {
       font-family: 'Montserrat', sans-serif;
     }
@@ -64,7 +64,7 @@
           </div>
           <div>
             <p class="text-sm text-gray-500">Pendientes</p>
-            <p class="text-xl font-bold">26</p>
+            <p class="text-xl font-bold" id="ordenes-pendientes">26</p>
           </div>
         </div>
       </div>
@@ -90,10 +90,13 @@
   const orderDetails = document.getElementById('order-details');
   const orderTotal = document.getElementById('order-totals'); 
   const ordenesEntregadas = document.getElementById('ordenes-entregadas'); 
-
+  const ordenesPendientes = document.getElementById('ordenes-pendientes');  
   function renderOrders(orders) {
+
+ 
     ordersList.innerHTML = ''; // limpiar
     orders.forEach((order, index) => {
+          console.log(order.id);
       const card = document.createElement('div');
       card.className = 'bg-white rounded-lg shadow p-4 cursor-pointer relative hover:ring-2 ring-blue-300';
       card.innerHTML = `
@@ -106,19 +109,19 @@
       ordersList.appendChild(card);
       if (index === 0) renderOrderDetails(order); // Mostrar la primera por defecto
     });
-
- 
+    
   }
 
  
 function renderTotalOrdersEntregadas(data3){
   ordenesEntregadas.innerHTML = ''; // limpiar
-  ordenesEntregadas.innerHTML = `${data3.totalordenesentregadas}`; // mostrar total de órdenes
+  ordenesEntregadas.innerHTML = data3.total; // mostrar total de órdenes
 }
-
+function renderTotalPendientes(data4){
+  ordenesPendientes.textContent = data4.total;
+}
 function renderTotalOrders(data2){
-  orderTotal.innerHTML = ''; // limpiar
-  orderTotal.innerHTML = `${data2.totalordenes}`; // mostrar total de órdenes
+  orderTotal.textContent = data2.total;
 }
 
   function renderOrderDetails(order) {
@@ -135,6 +138,17 @@ function renderTotalOrders(data2){
           <div>
             <p class="font-semibold">Comentario del cliente</p>
             <p class="font-medium text-gray-700">${order.comment}</p>
+            <div class="mt-4">
+  <label for="estado-select" class="block text-sm font-medium text-gray-700 mb-1">Cambiar estado:</label>
+  <select id="estado-select"  onchange="cambiarEstadoOrden(this, '${order.id.replace('#', '')}')" class="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200">
+    <option value="" disabled selected>Selecciona un estado</option>
+    <option value="pendiente">Pendiente</option>
+    <option value="en preparación">En preparación</option>
+    <option value="listo">Listo</option>
+    <option value="entregado">Entregado</option>
+  </select>
+</div>
+
           </div>
         </div>
       </div>
@@ -169,19 +183,48 @@ function renderTotalOrders(data2){
     `;
   }
 
+
+  async function cambiarEstadoOrden(selectElement, ordenId) {
+  const nuevoEstado = selectElement.value;
+  if (!nuevoEstado) return;
+
+  try {
+    const response = await fetch('../API/api/ordenes/api_cambiar_estado_orden.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: ordenId, estado: nuevoEstado })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      alert('Estado actualizado correctamente');
+      fetchOrders();
+    } else {
+      alert('Error al actualizar el estado');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Ocurrió un error al actualizar el estado.');
+  }
+}
+
   async function fetchOrders() {
     try {
-      const response = await fetch('obtener_ordenes.php');
+      const response = await fetch('../API/api/ordenes/api_ordenes_total_con_detalles.php');
       const data = await response.json();
       renderOrders(data);
 
-    const response2 = await fetch('obtener_total_ordenes.php');
-    const data2 = await response2.json();  // CORRECCIÓN: aquí debe ser response2.json()
-    renderTotalOrders(data2);
+      const response2 = await fetch('../API/api/ordenes/api_ordenes_total.php');
+      const data2 = await response2.json();   
+      renderTotalOrders(data2);
 
-    const response3 = await fetch('obtener_total_ordenes_entregadas.php');
-    const data3 = await response3.json();   
-    renderTotalOrdersEntregadas(data3);
+      const response3 = await fetch('../API/api/ordenes/api_obtener_total_ordenes_entregadas.php');
+      const data3 = await response3.json();   
+      renderTotalOrdersEntregadas(data3);
+
+      const response4 = await fetch('../API/api/ordenes/api_ordenes_pendientes.php');
+      const data4 = await response4.json();   
+      renderTotalPendientes(data4);
 
 
     } catch (err) {
