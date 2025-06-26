@@ -12,3 +12,6 @@ RUN apk update; \
 # 3. Instala la extensión "mysqli" de PHP, que es necesaria para la interacción con bases de datos MySQL.
 #    "docker-php-ext-install" es un script que facilita la instalación de extensiones comunes de PHP en imágenes oficiales de Docker.
 RUN docker-php-ext-install mysqli
+# 4. Instala la extensión "pdo" y "pdo_mysql" para habilitar soporte para bases de datos utilizando PDO.
+#    Primero, se instalará el soporte para PDO y luego se instalará el controlador para MySQL.
+RUN docker-php-ext-install pdo pdo_mysql

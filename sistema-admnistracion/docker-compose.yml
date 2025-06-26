@@ -28,7 +28,7 @@ services:
     # Configuración de puertos: el contenedor apache expone el puerto 80,
     # que será mapeado al puerto 8080 del host.
     ports:
-      - "8080:80"
+      - "8000:80"
     
     # Volúmenes para compartir archivos entre el contenedor y el host.
     volumes:

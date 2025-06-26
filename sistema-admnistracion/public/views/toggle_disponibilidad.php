@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $conexion = new mysqli("localhost", "root", "", "restaurante");
+    $conexion = new mysqli("mysql", "user1", "passwd", "restaurante");
     $conexion->set_charset("utf8");
 
     $id_plato = $_POST['id_plato'];

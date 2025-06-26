@@ -1,6 +1,6 @@
 <?php
 // Conexión a la base de datos
-$conexion = new mysqli("localhost", "root", "", "restaurante");
+$conexion = new mysqli("mysql", "user1", "passwd", "restaurante");
 $conexion->set_charset("utf8");
 
 if ($conexion->connect_error) {
@@ -73,6 +73,10 @@ $resultado = $conexion->query($consulta);
       <td class="px-4 py-3">
         <img src="<?php echo htmlspecialchars($plato['imagen_url']); ?>" alt="imagen plato"
              class="w-16 h-16 object-cover rounded">
+        <br>
+        <!-- Campo para actualizar la URL de la imagen -->
+        <input type="text" name="imagen_url" value="<?php echo htmlspecialchars($plato['imagen_url']); ?>"
+               class="w-full px-2 py-1 border rounded text-sm mt-2" placeholder="Nueva URL de la imagen">
       </td>
 
       <td class="px-4 py-3 text-sm">
@@ -92,25 +96,24 @@ $resultado = $conexion->query($consulta);
       </td>
 
       <td class="px-4 py-3 flex flex-col gap-2">
+        <!-- Botón de Actualización -->
         <button type="submit" class="text-green-600 hover:text-green-800 flex items-center gap-1">
           <i class="ti ti-edit"></i> Actualizar
         </button>
-    </form>
 
-    <!-- Formulario de disponibilidad -->
-    <form action="toggle_disponibilidad.php" method="POST">
-      <input type="hidden" name="id_plato" value="<?php echo $plato['id_plato']; ?>">
-      <input type="hidden" name="nuevo_estado" value="<?php echo $plato['disponible'] ? 0 : 1; ?>">
-      <button type="submit" class="text-blue-600 hover:text-blue-800 flex items-center gap-1">
-        <i class="ti ti-refresh"></i>
-        <?php echo $plato['disponible'] ? 'Desactivar' : 'Activar'; ?>
-      </button>
-    </form>
+        <!-- Formulario de disponibilidad -->
+        <form action="toggle_disponibilidad.php" method="POST">
+          <input type="hidden" name="id_plato" value="<?php echo $plato['id_plato']; ?>">
+          <input type="hidden" name="nuevo_estado" value="<?php echo $plato['disponible'] ? 0 : 1; ?>">
+          <button type="submit" class="text-blue-600 hover:text-blue-800 flex items-center gap-1 mt-2">
+            <i class="ti ti-refresh"></i>
+            <?php echo $plato['disponible'] ? 'Desactivar' : 'Activar'; ?>
+          </button>
+        </form>
       </td>
+    </form>
   </tr>
 <?php endwhile; ?>
-
-
           </tbody>
         </table>
       </div>

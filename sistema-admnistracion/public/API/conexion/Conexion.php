@@ -4,14 +4,16 @@ define('DB_SERVER', 'mysql');
 define('DB_USERNAME', 'user1');
 define('DB_PASSWORD', 'passwd');
 define('DB_NAME', 'restaurante');
-
+define('DB_PORT', 3306);  // Puerto de la base de datos MySQL (por defecto 3306)
 class Conexion {
     public static function conectar() {
         $host = DB_SERVER;
         $db = DB_NAME;
         $user = DB_USERNAME;
         $pass = DB_PASSWORD;
-        $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+        $port = DB_PORT;  
+       
+        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";  // Agregar el puerto a la cadena DSN
 
         try {
             return new PDO($dsn, $user, $pass, [
