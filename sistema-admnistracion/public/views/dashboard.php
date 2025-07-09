@@ -37,6 +37,7 @@ $conexion->close();
         <a href="index.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">Órdenes</a>
         <a href="registrar_orden.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">Registrar Orden</a>
         <a href="admin_platos.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">Administrar Platos</a>
+        <a href="../logout.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">CERRAR SESION</a>
       </nav>
     </aside>
 
