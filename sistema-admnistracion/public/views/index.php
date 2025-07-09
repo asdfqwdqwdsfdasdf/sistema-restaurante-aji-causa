@@ -22,6 +22,12 @@ if (!isset($_SESSION['account_loggedin'])) {
   </style>
 </head>
 <body class="bg-gray-100">
+  <audio id="order-sound" preload="auto">
+ 
+  <source src="../assets/sounds/bell.wav" type="audio/wav">
+  Tu navegador no soporta audio HTML5.
+  </audio>
+
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-md flex flex-col">
@@ -101,10 +107,24 @@ if (!isset($_SESSION['account_loggedin'])) {
   const orderTotal = document.getElementById('order-totals'); 
   const ordenesEntregadas = document.getElementById('ordenes-entregadas'); 
   const ordenesPendientes = document.getElementById('ordenes-pendientes');  
-  function renderOrders(orders) {
+  let lastOrderId = null;
+  const bellSound = document.getElementById('order-sound');
 
- 
+
+  function renderOrders(orders) {
+    
     ordersList.innerHTML = ''; // limpiar
+
+    // Verificamos si hay una nueva orden
+    if (orders.length > 0) {
+      const newestOrderId = orders[0].id;
+      if (lastOrderId !== null && newestOrderId !== lastOrderId) {
+        bellSound.play().catch(e => console.warn('No se pudo reproducir el sonido:', e));
+      }
+      lastOrderId = newestOrderId;
+    }
+
+
     orders.forEach((order, index) => {
           console.log(order.id);
       const card = document.createElement('div');
