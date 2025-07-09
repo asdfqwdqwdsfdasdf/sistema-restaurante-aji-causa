@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['account_loggedin'])) {
+    header('Location: ../index.php');
+    exit;
+}
 // Conexión a la base de datos
 $conexion = new mysqli("mysql", "user1", "passwd", "restaurante");
 $conexion->set_charset("utf8");
@@ -27,6 +32,7 @@ $resultado = $conexion->query($consulta);
     <aside class="w-64 bg-white shadow-md flex flex-col">
       <div class="p-6 text-2xl font-bold text-blue-600">Aji Causa Restaurante</div>
       <nav class="mt-4 flex flex-col gap-2">
+        <a href="dashboard.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">Dashboard</a>
         <a href="index.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">Órdenes</a>
         <a href="admin_platos.php" class="px-6 py-2 text-blue-600 bg-blue-100 rounded-r-full font-medium">Platos</a>
       </nav>

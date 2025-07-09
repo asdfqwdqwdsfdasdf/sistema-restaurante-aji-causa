@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['account_loggedin'])) {
+    header('Location: ../index.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,8 +25,10 @@
   <div class="flex h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-white shadow-md flex flex-col">
+     
       <div class="p-6 text-2xl font-bold text-blue-600">Aji Causa Restaurante</div>
       <nav class="mt-4 flex flex-col gap-2">
+         <a href="dashboard.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">Dashboard</a>
         <a href="#" class="px-6 py-2 text-blue-600 bg-blue-100 rounded-r-full font-medium">Órdenes</a>
         <a href="admin_platos.php" class="px-6 py-2 text-gray-600 hover:bg-blue-100 rounded-r-full">Platos</a>
       </nav>

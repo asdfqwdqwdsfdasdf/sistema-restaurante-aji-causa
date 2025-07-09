@@ -1,6 +1,6 @@
 # Definición de la versión del archivo de Compose. 
 # Esto es importante para determinar qué características de Docker Compose se utilizarán.
-version: "3"
+#version: "3"
 
 # Sección donde se definen los servicios (contenedores) que formarán parte de la aplicación.
 services:
